@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -36,10 +37,9 @@ namespace ArchitectureCreator
             InitializeComponent();
             ImageItems = new List<ImageItem>
             {
-                new ImageItem("Images/image1.jpg", "Description 1"),
-                new ImageItem("Images/image2.jpg", "Description 2"),
-                new ImageItem("Images/image3.jpg", "Description 3")
-                // Dodaj więcej elementów według potrzeb
+                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 1"),
+                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 2"),
+                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 3")
             };
             DataContext = this;
         }
