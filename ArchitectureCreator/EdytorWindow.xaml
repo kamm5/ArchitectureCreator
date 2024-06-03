@@ -11,20 +11,26 @@
         <Button x:Name="openProject" Content="Otwórz Projekt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Margin="127,0,0,0"/>
         <Button x:Name="exportProject" Content="Eksportuj Projekt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Margin="262,0,0,0"/>
         <Grid HorizontalAlignment="Left" Height="540" Margin="60,80,0,0" VerticalAlignment="Top" Width="820"/>
-        <ListView HorizontalAlignment="Left" Height="650" Margin="951,0,0,0" VerticalAlignment="Center" Width="300" ItemsSource="{Binding ImageItems}">
+        <ListView HorizontalAlignment="Left" Height="650" Margin="951,0,0,0" VerticalAlignment="Center" Width="300" ItemsSource="{Binding elements}">
             <ListView.View>
                 <GridView>
-                    <GridViewColumn Header="Image" Width="200">
+                    <GridViewColumn Header="Image" Width="110">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate>
-                                <Image Source="{Binding ImagePath}" Width="100" Height="100" />
+                                <Image Source="{Binding image}" Width="100" Height="100" />
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Header="Description" Width="300" DisplayMemberBinding="{Binding Description}" />
+                    <GridViewColumn Header="Name" Width="100" DisplayMemberBinding="{Binding name}" />
+                    <GridViewColumn Header="Description" Width="200">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <TextBlock Text="{Binding description}" TextWrapping="Wrap" />
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
                 </GridView>
             </ListView.View>
         </ListView>
-
     </Grid>
 </Window>

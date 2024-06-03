@@ -18,29 +18,14 @@ namespace ArchitectureCreator
     /// <summary>
     /// Logika interakcji dla klasy EdytorWindow.xaml
     /// </summary>
-    public class ImageItem
-    {
-        public string ImagePath { get; set; }
-        public string Description { get; set; }
-
-        public ImageItem(string imagePath, string description)
-        {
-            ImagePath = imagePath;
-            Description = description;
-        }
-    }
     public partial class EdytorWindow : Window
     {
-        public List<ImageItem> ImageItems { get; set; }
+        public List<Element> elements { get; set; }
         public EdytorWindow()
         {
             InitializeComponent();
-            ImageItems = new List<ImageItem>
-            {
-                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 1"),
-                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 2"),
-                new ImageItem(System.IO.Path.Combine(Environment.CurrentDirectory, "Images", "image1.jpg"), "Description 3")
-            };
+            elements = FileManager.LoadElements();
+            FileManager.AddImagePath(elements);
             DataContext = this;
         }
     }
