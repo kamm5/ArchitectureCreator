@@ -22,13 +22,16 @@ namespace ArchitectureCreator
         public MainWindow()
         {
             InitializeComponent();
-            EdytorWindow edytorWindow = new EdytorWindow();
-            edytorWindow.Show();
         }
         private void NumberValidationTextBox(object sender, TextCompositionEventArgs e)
         {
             Regex regex = new Regex("[^0-9]+");
             e.Handled = regex.IsMatch(e.Text);
+        }
+        private void Button_Accept(object sender, RoutedEventArgs e)
+        {
+            if(roomWidthBox.Text!="" && roomHeightBox.Text!="")
+                MainFrame.Navigate(new EdytorPage(float.Parse(roomWidthBox.Text), float.Parse(roomHeightBox.Text)));
         }
     }
 }

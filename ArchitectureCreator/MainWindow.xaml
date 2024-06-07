@@ -11,9 +11,10 @@
         <Label Content="Podaj wymiary pomieszczenia" HorizontalAlignment="Left" Margin="132,178,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
         <Label Content="Wysokość:" HorizontalAlignment="Left" Margin="132,262,0,0" VerticalAlignment="Top" FontSize="20"/>
         <Label Content="Szerokość:" HorizontalAlignment="Left" Margin="132,220,0,0" VerticalAlignment="Top" FontSize="20"/>
-        <TextBox x:Name="roomWidth" HorizontalAlignment="Left" Margin="240,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
-        <TextBox x:Name="roomHeight" HorizontalAlignment="Left" Margin="240,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
-        <Button x:Name="acceptDimensions" Content="Zatwierdź" HorizontalAlignment="Left" Margin="132,304,0,0" VerticalAlignment="Top" FontSize="20" Width="200"/>
+        <TextBox x:Name="roomWidthBox" HorizontalAlignment="Left" Margin="240,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
+        <TextBox x:Name="roomHeightBox" HorizontalAlignment="Left" Margin="240,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
+        <Button x:Name="acceptDimensions" Content="Zatwierdź" Click="Button_Accept" HorizontalAlignment="Left" Margin="132,304,0,0" VerticalAlignment="Top" FontSize="20" Width="200"/>
         <TextBlock x:Name="elementTextBlock" HorizontalAlignment="Left" Margin="500,370,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="300" Width="750" FontSize="16"/>
+        <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

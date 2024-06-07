@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,25 +10,27 @@ using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
+using System.Windows.Navigation;
 using System.Windows.Shapes;
 
 namespace ArchitectureCreator
 {
     /// <summary>
-    /// Logika interakcji dla klasy EdytorWindow.xaml
+    /// Logika interakcji dla klasy EdytorPage.xaml
     /// </summary>
-    public partial class EdytorWindow : Window
+    public partial class EdytorPage : Page
     {
         private bool isDragging = false;
         private Point clickPosition;
         public List<Element> elements { get; set; }
-        public EdytorWindow()
+        public EdytorPage(float roomWidthfloat, float roomHeightfloat)
         {
             InitializeComponent();
             elements = FileManager.LoadElements();
             FileManager.AddImagePath(elements);
             DataContext = this;
         }
+
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             isDragging = true;
