@@ -19,7 +19,7 @@
         <Button x:Name="saveProject" Content="Zapisz Projekt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20"/>
         <Button x:Name="openProject" Content="Otwórz Projekt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Margin="127,0,0,0"/>
         <Button x:Name="exportProject" Content="Eksportuj Projekt" HorizontalAlignment="Left" VerticalAlignment="Top" FontSize="20" Margin="262,0,0,0"/>
-        <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="50,90,380,50">
+        <ScrollViewer x:Name="CanvasScrollViewer" HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Auto" Margin="50,90,380,50">
             <Canvas Width="1000" Height="800" Name="DrawingCanvas" Background="white" MouseLeftButtonDown="Canvas_MouseLeftButtonDown" MouseMove="Canvas_MouseMove" MouseLeftButtonUp="Canvas_MouseLeftButtonUp" MouseWheel="WorkspaceCanvas_MouseWheel">
                 <Canvas.LayoutTransform>
                     <ScaleTransform x:Name="CanvasScaleTransform" ScaleX="1" ScaleY="1"/>

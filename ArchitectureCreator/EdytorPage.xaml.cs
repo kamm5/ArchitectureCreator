@@ -23,6 +23,7 @@ namespace ArchitectureCreator
         private Canvas _selectedElement;
         private Point _clickPosition;
         private bool _isDragging = false;
+        private double _currentAngle = 0;
         public List<Element> elements { get; set; }
         public EdytorPage(float roomWidthfloat, float roomHeightfloat)
         {
@@ -161,11 +162,22 @@ namespace ArchitectureCreator
 
         private void WorkspaceCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            // Zmiana skali w zależności od scrolla
-            var scaleTransform = (ScaleTransform)DrawingCanvas.LayoutTransform;
-            double zoom = e.Delta > 0 ? 1.1 : 1 / 1.1;
-            scaleTransform.ScaleX *= zoom;
-            scaleTransform.ScaleY *= zoom;
+            if (_isDragging && _selectedElement != null)
+            {
+                double angleDelta = e.Delta > 0 ? 5 : -5;
+                _currentAngle += angleDelta;
+
+                RotateTransform rotateTransform = new RotateTransform(_currentAngle, _selectedElement.Width / 2, _selectedElement.Height / 2);
+                _selectedElement.RenderTransform = rotateTransform;
+            }
+            else
+            {
+                // Zmiana skali w zależności od scrolla
+                var scaleTransform = (ScaleTransform)DrawingCanvas.LayoutTransform;
+                double zoom = e.Delta > 0 ? 1.1 : 1 / 1.1;
+                scaleTransform.ScaleX *= zoom;
+                scaleTransform.ScaleY *= zoom;
+            }
         }
     }
 }
