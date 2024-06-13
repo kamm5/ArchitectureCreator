@@ -40,16 +40,11 @@ namespace ArchitectureCreator
 
             if (_selectedElement != null)
             {
-                // Rozpocznij przesuwanie elementu
-                _isDragging = true;
-                _clickPosition = position;
-                DrawingCanvas.CaptureMouse();
+                StartDragging(position);
             }
             else if (!IsPositionOccupied(position))
             {
-                // Utwórz nowy element (prostokąt z trójkątem)
-                Canvas newElement = CreateRectangleWithTriangle(position);
-                DrawingCanvas.Children.Add(newElement);
+                CreateAndAddElement(position);
             }
         }
 
@@ -57,87 +52,113 @@ namespace ArchitectureCreator
         {
             if (_isDragging && _selectedElement != null)
             {
-                Point position = e.GetPosition(DrawingCanvas);
-                double offsetX = position.X - _clickPosition.X;
-                double offsetY = position.Y - _clickPosition.Y;
-
-                double newLeft = Canvas.GetLeft(_selectedElement) + offsetX;
-                double newTop = Canvas.GetTop(_selectedElement) + offsetY;
-
-                // Aktualizuj pozycję elementu
-                Canvas.SetLeft(_selectedElement, newLeft);
-                Canvas.SetTop(_selectedElement, newTop);
-
-                _clickPosition = position;
+                DragElement(e.GetPosition(DrawingCanvas));
             }
         }
 
         private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            StopDragging();
+        }
+
+        private void WorkspaceCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        {
+            if (_isDragging && _selectedElement != null)
+            {
+                RotateElement(e.Delta);
+            }
+            else
+            {
+                ZoomCanvas(e.Delta);
+            }
+        }
+
+        private void StartDragging(Point position)
+        {
+            _isDragging = true;
+            _clickPosition = position;
+            DrawingCanvas.CaptureMouse();
+        }
+
+        private void StopDragging()
         {
             _isDragging = false;
             _selectedElement = null;
             DrawingCanvas.ReleaseMouseCapture();
         }
 
+        private void DragElement(Point position)
+        {
+            double offsetX = position.X - _clickPosition.X;
+            double offsetY = position.Y - _clickPosition.Y;
+
+            Canvas.SetLeft(_selectedElement, Canvas.GetLeft(_selectedElement) + offsetX);
+            Canvas.SetTop(_selectedElement, Canvas.GetTop(_selectedElement) + offsetY);
+
+            _clickPosition = position;
+        }
+
+        private void RotateElement(int delta)
+        {
+            _currentAngle += delta > 0 ? 5 : -5;
+            _selectedElement.RenderTransform = new RotateTransform(_currentAngle, _selectedElement.Width / 2, _selectedElement.Height / 2);
+        }
+
+        private void ZoomCanvas(int delta)
+        {
+            var scaleTransform = (ScaleTransform)DrawingCanvas.LayoutTransform;
+            double zoom = delta > 0 ? 1.1 : 1 / 1.1;
+            scaleTransform.ScaleX *= zoom;
+            scaleTransform.ScaleY *= zoom;
+        }
+
         private Canvas GetElementAtPosition(Point position)
         {
-            foreach (UIElement element in DrawingCanvas.Children)
-            {
-                if (element is Canvas canvasElement)
-                {
-                    double left = Canvas.GetLeft(canvasElement);
-                    double top = Canvas.GetTop(canvasElement);
-                    double right = left + canvasElement.Width;
-                    double bottom = top + canvasElement.Height;
-
-                    if (position.X >= left && position.X <= right && position.Y >= top && position.Y <= bottom)
-                    {
-                        return canvasElement;
-                    }
-                }
-            }
-            return null;
+            return DrawingCanvas.Children
+                .OfType<Canvas>()
+                .FirstOrDefault(canvas => IsPointInsideElement(position, canvas));
         }
 
         private bool IsPositionOccupied(Point position)
         {
-            foreach (UIElement element in DrawingCanvas.Children)
-            {
-                if (element is Canvas canvasElement)
-                {
-                    double left = Canvas.GetLeft(canvasElement);
-                    double top = Canvas.GetTop(canvasElement);
-                    double right = left + canvasElement.Width;
-                    double bottom = top + canvasElement.Height;
+            return DrawingCanvas.Children
+                .OfType<Canvas>()
+                .Any(canvas => IsPointInsideElement(position, canvas));
+        }
 
-                    if (position.X >= left && position.X <= right && position.Y >= top && position.Y <= bottom)
-                    {
-                        return true;
-                    }
-                }
-            }
-            return false;
+        private bool IsPointInsideElement(Point point, UIElement element)
+        {
+            double left = Canvas.GetLeft(element);
+            double top = Canvas.GetTop(element);
+            double right = left + element.RenderSize.Width;
+            double bottom = top + element.RenderSize.Height;
+
+            return point.X >= left && point.X <= right && point.Y >= top && point.Y <= bottom;
+        }
+
+        private void CreateAndAddElement(Point position)
+        {
+            var newElement = CreateRectangleWithTriangle(position);
+            DrawingCanvas.Children.Add(newElement);
         }
 
         private Canvas CreateRectangleWithTriangle(Point position)
         {
-            // Tworzenie kontenera Canvas
             Canvas container = new Canvas
             {
                 Width = 100,
                 Height = 130 // Wysokość większa, aby pomieścić trójkąt
             };
 
-            // Tworzenie prostokąta
             Rectangle rectangle = new Rectangle
             {
                 Width = 100,
                 Height = 100,
-                Fill = Brushes.Blue
+                Fill = Brushes.Transparent,
+                Stroke = Brushes.Black
             };
-            Canvas.SetTop(rectangle, 30); // Ustawienie prostokąta poniżej trójkąta
+            Canvas.SetTop(rectangle, 30);
 
-            // Tworzenie trójkąta
             Polygon triangle = new Polygon
             {
                 Points = new PointCollection(new Point[]
@@ -146,38 +167,17 @@ namespace ArchitectureCreator
                     new Point(50, 0),
                     new Point(100, 30)
                 }),
-                Fill = Brushes.Green
+                Fill = Brushes.Transparent,
+                Stroke = Brushes.Black
             };
 
-            // Dodanie prostokąta i trójkąta do kontenera
             container.Children.Add(rectangle);
             container.Children.Add(triangle);
 
-            // Ustawienie pozycji kontenera na głównym Canvas
             Canvas.SetLeft(container, position.X);
             Canvas.SetTop(container, position.Y);
 
             return container;
-        }
-
-        private void WorkspaceCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
-        {
-            if (_isDragging && _selectedElement != null)
-            {
-                double angleDelta = e.Delta > 0 ? 5 : -5;
-                _currentAngle += angleDelta;
-
-                RotateTransform rotateTransform = new RotateTransform(_currentAngle, _selectedElement.Width / 2, _selectedElement.Height / 2);
-                _selectedElement.RenderTransform = rotateTransform;
-            }
-            else
-            {
-                // Zmiana skali w zależności od scrolla
-                var scaleTransform = (ScaleTransform)DrawingCanvas.LayoutTransform;
-                double zoom = e.Delta > 0 ? 1.1 : 1 / 1.1;
-                scaleTransform.ScaleX *= zoom;
-                scaleTransform.ScaleY *= zoom;
-            }
         }
     }
 }

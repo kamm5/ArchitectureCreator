@@ -22,5 +22,4 @@ namespace ArchitectureCreator
             category = categoryT;
         }
     }
-
 }
