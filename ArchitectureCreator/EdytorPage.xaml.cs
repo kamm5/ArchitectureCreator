@@ -12,6 +12,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Xml.Linq;
 
 namespace ArchitectureCreator
 {
@@ -25,12 +26,32 @@ namespace ArchitectureCreator
         private bool _isDragging = false;
         private double _currentAngle = 0;
         public List<Element> elements { get; set; }
+        public Element selectedElement;
+
+        private void SetCanvas(float roomWidthfloat, float roomHeightfloat)
+        {
+            DrawingCanvas.Width = roomWidthfloat * 100;
+            DrawingCanvas.Height = roomHeightfloat * 100;
+            CanvasBorder.Width = roomWidthfloat * 100;
+            CanvasBorder.Height = roomHeightfloat * 100;
+        }
+
         public EdytorPage(float roomWidthfloat, float roomHeightfloat)
         {
             InitializeComponent();
             elements = FileManager.LoadElements();
             FileManager.AddImagePath(elements);
             DataContext = this;
+            SetCanvas(roomWidthfloat, roomHeightfloat);
+        }
+
+        private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (e.AddedItems.Count > 0)
+            {
+                selectedElement = e.AddedItems[0] as Element;
+                MessageBox.Show($"Element '{selectedElement.name}' has been added to the selected list.");
+            }
         }
 
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -44,7 +65,17 @@ namespace ArchitectureCreator
             }
             else if (!IsPositionOccupied(position))
             {
-                CreateAndAddElement(position);
+                if (selectedElement != null)
+                {
+                    MessageBox.Show($"Element '{selectedElement.name}' has been added to the selected list.");
+                    //CreateAndAddElement(position);
+                    var newElement = selectedElement.CreateShape(position);
+                    DrawingCanvas.Children.Add(newElement);
+                }
+                else
+                {
+                    MessageBox.Show("Najpierw wybierz element");
+                }
             }
         }
 
@@ -136,18 +167,12 @@ namespace ArchitectureCreator
             return point.X >= left && point.X <= right && point.Y >= top && point.Y <= bottom;
         }
 
-        private void CreateAndAddElement(Point position)
-        {
-            var newElement = CreateRectangleWithTriangle(position);
-            DrawingCanvas.Children.Add(newElement);
-        }
-
         private Canvas CreateRectangleWithTriangle(Point position)
         {
             Canvas container = new Canvas
             {
                 Width = 100,
-                Height = 130 // Wysokość większa, aby pomieścić trójkąt
+                Height = 130
             };
 
             Rectangle rectangle = new Rectangle
