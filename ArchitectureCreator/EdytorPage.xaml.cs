@@ -40,7 +40,6 @@ namespace ArchitectureCreator
         {
             InitializeComponent();
             elements = FileManager.LoadElements();
-            FileManager.AddImagePath(elements);
             DataContext = this;
             SetCanvas(roomWidthfloat, roomHeightfloat);
         }
@@ -50,7 +49,6 @@ namespace ArchitectureCreator
             if (e.AddedItems.Count > 0)
             {
                 selectedElement = e.AddedItems[0] as Element;
-                MessageBox.Show($"Element '{selectedElement.name}' has been added to the selected list.");
             }
         }
 
@@ -67,8 +65,6 @@ namespace ArchitectureCreator
             {
                 if (selectedElement != null)
                 {
-                    MessageBox.Show($"Element '{selectedElement.name}' has been added to the selected list.");
-                    //CreateAndAddElement(position);
                     var newElement = selectedElement.CreateShape(position);
                     DrawingCanvas.Children.Add(newElement);
                 }

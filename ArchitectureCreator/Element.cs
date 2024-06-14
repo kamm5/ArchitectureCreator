@@ -55,9 +55,9 @@ namespace ArchitectureCreator
         }
     }
 
-    public class Stair : Element
+    public class Chair : Element
     {
-        public Stair(string category, string name, string description, string image)
+        public Chair(string category, string name, string description, string image)
             : base(category, name, description, image) { }
 
         public override Canvas CreateShape(Point position)
@@ -91,6 +91,171 @@ namespace ArchitectureCreator
     public class Desk : Element
     {
         public Desk(string category, string name, string description, string image)
+            : base(category, name, description, image) { }
+
+        public override Canvas CreateShape(Point position)
+        {
+            Canvas container = new Canvas
+            {
+                Width = 100,
+                Height = 30 // Wysokość większa, aby pomieścić trójkąt
+            };
+
+            Polygon triangle = new Polygon
+            {
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0, 30),
+                    new Point(50, 0),
+                    new Point(100, 30)
+                }),
+                Fill = Brushes.Blue,
+                Stroke = Brushes.Black
+            };
+
+            container.Children.Add(triangle);
+
+            Canvas.SetLeft(container, position.X);
+            Canvas.SetTop(container, position.Y);
+
+            return container;
+        }
+    }
+    public class Door : Element
+    {
+        public Door(string category, string name, string description, string image)
+            : base(category, name, description, image) { }
+
+        public override Canvas CreateShape(Point position)
+        {
+            Canvas container = new Canvas
+            {
+                Width = 100,
+                Height = 30 // Wysokość większa, aby pomieścić trójkąt
+            };
+
+            Polygon triangle = new Polygon
+            {
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0, 30),
+                    new Point(50, 0),
+                    new Point(100, 30)
+                }),
+                Fill = Brushes.Blue,
+                Stroke = Brushes.Black
+            };
+
+            container.Children.Add(triangle);
+
+            Canvas.SetLeft(container, position.X);
+            Canvas.SetTop(container, position.Y);
+
+            return container;
+        }
+    }
+    public class WindowO : Element
+    {
+        public WindowO(string category, string name, string description, string image)
+            : base(category, name, description, image) { }
+
+        public override Canvas CreateShape(Point position)
+        {
+            Canvas container = new Canvas
+            {
+                Width = 100,
+                Height = 30 // Wysokość większa, aby pomieścić trójkąt
+            };
+
+            Polygon triangle = new Polygon
+            {
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0, 30),
+                    new Point(50, 0),
+                    new Point(100, 30)
+                }),
+                Fill = Brushes.Blue,
+                Stroke = Brushes.Black
+            };
+
+            container.Children.Add(triangle);
+
+            Canvas.SetLeft(container, position.X);
+            Canvas.SetTop(container, position.Y);
+
+            return container;
+        }
+    }
+    public class Dresser : Element
+    {
+        public Dresser(string category, string name, string description, string image)
+            : base(category, name, description, image) { }
+
+        public override Canvas CreateShape(Point position)
+        {
+            Canvas container = new Canvas
+            {
+                Width = 100,
+                Height = 30 // Wysokość większa, aby pomieścić trójkąt
+            };
+
+            Polygon triangle = new Polygon
+            {
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0, 30),
+                    new Point(50, 0),
+                    new Point(100, 30)
+                }),
+                Fill = Brushes.Blue,
+                Stroke = Brushes.Black
+            };
+
+            container.Children.Add(triangle);
+
+            Canvas.SetLeft(container, position.X);
+            Canvas.SetTop(container, position.Y);
+
+            return container;
+        }
+    }
+    public class Wardrobe : Element
+    {
+        public Wardrobe(string category, string name, string description, string image)
+            : base(category, name, description, image) { }
+
+        public override Canvas CreateShape(Point position)
+        {
+            Canvas container = new Canvas
+            {
+                Width = 100,
+                Height = 30 // Wysokość większa, aby pomieścić trójkąt
+            };
+
+            Polygon triangle = new Polygon
+            {
+                Points = new PointCollection(new Point[]
+                {
+                    new Point(0, 30),
+                    new Point(50, 0),
+                    new Point(100, 30)
+                }),
+                Fill = Brushes.Blue,
+                Stroke = Brushes.Black
+            };
+
+            container.Children.Add(triangle);
+
+            Canvas.SetLeft(container, position.X);
+            Canvas.SetTop(container, position.Y);
+
+            return container;
+        }
+    }
+    public class Bed : Element
+    {
+        public Bed(string category, string name, string description, string image)
             : base(category, name, description, image) { }
 
         public override Canvas CreateShape(Point position)
