@@ -39,6 +39,8 @@ namespace ArchitectureCreator
         public EdytorPage(float roomWidthfloat, float roomHeightfloat)
         {
             InitializeComponent();
+            DrawingCanvas.Focusable = true;
+            DrawingCanvas.Focus();
             elements = FileManager.LoadElements();
             DataContext = this;
             SetCanvas(roomWidthfloat, roomHeightfloat);
@@ -161,6 +163,15 @@ namespace ArchitectureCreator
             double bottom = top + element.RenderSize.Height;
 
             return point.X >= left && point.X <= right && point.Y >= top && point.Y <= bottom;
+        }
+
+        private void Canvas_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Back && _selectedElement != null)
+            {
+                DrawingCanvas.Children.Remove(_selectedElement);
+                _selectedElement = null;
+            }
         }
 
         private Canvas CreateRectangleWithTriangle(Point position)
