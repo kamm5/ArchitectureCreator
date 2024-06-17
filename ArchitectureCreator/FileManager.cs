@@ -54,5 +54,41 @@ namespace ArchitectureCreator
             }
             return elements;
         }
+        public static List<CanvasElement> SorterElements(List<CanvasElement> canvas_ns)
+        {
+            List<CanvasElement> elements = new List<CanvasElement>();
+            foreach (CanvasElement element in canvas_ns)
+            {
+                if (element.etype.category == "Chair")
+                {
+                    elements.Add(new CanvasElement(new Chair(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Desk")
+                {
+                    elements.Add(new CanvasElement(new Desk(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Door")
+                {
+                    elements.Add(new CanvasElement(new Door(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Window")
+                {
+                    elements.Add(new CanvasElement(new WindowO(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Dresser")
+                {
+                    elements.Add(new CanvasElement(new Dresser(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Wardrobe")
+                {
+                    elements.Add(new CanvasElement(new Wardrobe(element.etype), element.position, element.angle));
+                }
+                else if (element.etype.category == "Bed")
+                {
+                    elements.Add(new CanvasElement(new Bed(element.etype), element.position, element.angle));
+                }
+            }
+            return elements;
+        }
     }
 }

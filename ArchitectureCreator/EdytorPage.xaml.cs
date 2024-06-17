@@ -260,12 +260,14 @@ namespace ArchitectureCreator
                 DrawingCanvas.Height = savedProjekt.height * 100;
                 CanvasBorder.Width = savedProjekt.width * 100;
                 CanvasBorder.Height = savedProjekt.height * 100;
-                foreach (CanvasElement loadElement in savedProjekt.canvasElements)
+                saveProjectClass = null;
+                saveProjectClass = new SaveProjectClass(savedProjekt.width, savedProjekt.height);
+                List<CanvasElement> savedProjektCanvas = FileManager.SorterElements(savedProjekt.canvasElements);
+                foreach (CanvasElement loadElement in savedProjektCanvas)
                 {
-                    MessageBox.Show(loadElement.etype.name.ToString());
-                    // Wywołaj funkcję CreateShape z odpowiednimi danymi
-                    //var newElement = CreateShape(new Point(element.Left, element.Top), element.Angle);
-                    //DrawingCanvas.Children.Add(newElement);
+                    var newElement = loadElement.etype.CreateShape(loadElement.position);
+                    DrawingCanvas.Children.Add(newElement);
+                    saveProjectClass.canvasElements.Add(new CanvasElement(loadElement.etype, loadElement.position, loadElement.angle));
                 }
             }
         }

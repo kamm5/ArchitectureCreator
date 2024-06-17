@@ -64,6 +64,9 @@ namespace ArchitectureCreator
         public Chair(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
 
+        public Chair(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
+
         public override Canvas CreateShape(Point position)
         {
             double legSize = 10; // stały rozmiar nóg krzesła
@@ -163,6 +166,9 @@ namespace ArchitectureCreator
         public Desk(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
 
+        public Desk(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
+
         public override Canvas CreateShape(Point position)
         {
             double legSize = 10; // stały rozmiar nóg biurka
@@ -250,6 +256,9 @@ namespace ArchitectureCreator
         public Door(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
 
+        public Door(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
+
         public override Canvas CreateShape(Point position)
         {
             // Tworzenie kontenera o odpowiednim rozmiarze
@@ -309,6 +318,9 @@ namespace ArchitectureCreator
         public WindowO(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
 
+        public WindowO(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
+
         public override Canvas CreateShape(Point position)
         {
             // Tworzenie kontenera o odpowiednim rozmiarze
@@ -366,6 +378,9 @@ namespace ArchitectureCreator
     {
         public Dresser(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
+
+        public Dresser(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
 
         public override Canvas CreateShape(Point position)
         {
@@ -466,6 +481,9 @@ namespace ArchitectureCreator
         public Wardrobe(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
 
+        public Wardrobe(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
+
         public override Canvas CreateShape(Point position)
         {
             double partWidth = (width - 20) / 2; // szerokość każdej z głównych części szafy
@@ -539,6 +557,9 @@ namespace ArchitectureCreator
     {
         public Bed(string category, string name, string description, string image, double width, double height)
             : base(category, name, description, image, width, height) { }
+
+        public Bed(Element element)
+            : base(element.category, element.name, element.description, element.image, element.width, element.height) { }
 
         public override Canvas CreateShape(Point position)
         {
