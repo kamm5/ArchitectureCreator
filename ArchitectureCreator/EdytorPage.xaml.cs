@@ -152,16 +152,36 @@ namespace ArchitectureCreator
         {
             double offsetX = position.X - _clickPosition.X;
             double offsetY = position.Y - _clickPosition.Y;
+            Point pointTemp = new Point(Canvas.GetLeft(_selectedElement), Canvas.GetTop(_selectedElement));
+            int j = 0;
+            for (int i = 0; i < saveProjectClass.canvasElements.Count; i++)
+            {
+                if (saveProjectClass.canvasElements[i].position == pointTemp)
+                {
+                    j = i;
+                }
+            }
+            pointTemp = new Point(Canvas.GetLeft(_selectedElement) + offsetX, Canvas.GetTop(_selectedElement) + offsetY);
+            Canvas.SetLeft(_selectedElement, pointTemp.X);
+            Canvas.SetTop(_selectedElement, pointTemp.Y);
 
-            Canvas.SetLeft(_selectedElement, Canvas.GetLeft(_selectedElement) + offsetX);
-            Canvas.SetTop(_selectedElement, Canvas.GetTop(_selectedElement) + offsetY);
-
+            saveProjectClass.canvasElements[j].position = pointTemp;
             _clickPosition = position;
         }
 
         private void RotateElement(int delta)
         {
+            Point pointTemp = new Point(Canvas.GetLeft(_selectedElement), Canvas.GetTop(_selectedElement));
+            int j = 0;
+            for (int i = 0; i < saveProjectClass.canvasElements.Count; i++)
+            {
+                if (saveProjectClass.canvasElements[i].position == pointTemp)
+                {
+                    j = i;
+                }
+            }
             _currentAngle += delta > 0 ? 5 : -5;
+            saveProjectClass.canvasElements[j].angle= _currentAngle;
             _selectedElement.RenderTransform = new RotateTransform(_currentAngle, _selectedElement.Width / 2, _selectedElement.Height / 2);
         }
 
@@ -265,7 +285,8 @@ namespace ArchitectureCreator
                 List<CanvasElement> savedProjektCanvas = FileManager.SorterElements(savedProjekt.canvasElements);
                 foreach (CanvasElement loadElement in savedProjektCanvas)
                 {
-                    var newElement = loadElement.etype.CreateShape(loadElement.position);
+                    Canvas newElement = loadElement.etype.CreateShape(loadElement.position);
+                    newElement.RenderTransform = new RotateTransform(loadElement.angle, newElement.Width / 2, newElement.Height / 2);
                     DrawingCanvas.Children.Add(newElement);
                     saveProjectClass.canvasElements.Add(new CanvasElement(loadElement.etype, loadElement.position, loadElement.angle));
                 }
