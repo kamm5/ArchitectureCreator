@@ -1,20 +1,10 @@
 ﻿using Newtonsoft.Json;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using System.Xml.Linq;
-using System.IO;
 
 namespace ArchitectureCreator
 {
@@ -50,13 +40,13 @@ namespace ArchitectureCreator
 
     public partial class EdytorPage : Page
     {
-        private Canvas _selectedElement;
-        private Point _clickPosition;
-        private bool _isDragging = false;
-        private double _currentAngle = 0;
+        private Canvas selectedCanvasElement;
+        private Point clickPosition;
+        private bool isDragging = false;
+        private double currentAngle = 0;
         public List<Element> elements { get; set; }
         public List<CanvasElement> canvasElements = new List<CanvasElement>();
-        public Element selectedElement;
+        private Element selectedElement;
         public SaveProjectClass saveProjectClass;
 
         private void SetCanvas(float roomWidthfloat, float roomHeightfloat)
@@ -77,23 +67,29 @@ namespace ArchitectureCreator
             this.KeyDown += MainWindow_KeyDown;
         }
 
+        public EdytorPage()
+        {
+            InitializeComponent();
+            elements = FileManager.LoadElements();
+            DataContext = this;
+            SetCanvas(100, 100);
+            this.KeyDown += MainWindow_KeyDown;
+            AsyncInitialization();
+        }
+
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
-            {
                 selectedElement = e.AddedItems[0] as Element;
-            }
         }
 
         private void Canvas_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             Point position = e.GetPosition(DrawingCanvas);
-            _selectedElement = GetElementAtPosition(position);
+            selectedCanvasElement = GetElementAtPosition(position);
 
-            if (_selectedElement != null)
-            {
+            if (selectedCanvasElement != null)
                 StartDragging(position);
-            }
             else if (!IsPositionOccupied(position))
             {
                 if (selectedElement != null)
@@ -103,18 +99,14 @@ namespace ArchitectureCreator
                     saveProjectClass.canvasElements.Add(new CanvasElement(selectedElement, position, 0));
                 }
                 else
-                {
                     MessageBox.Show("Najpierw wybierz element");
-                }
             }
         }
 
         private void Canvas_MouseMove(object sender, MouseEventArgs e)
         {
-            if (_isDragging && _selectedElement != null)
-            {
+            if (isDragging && selectedCanvasElement != null)
                 DragElement(e.GetPosition(DrawingCanvas));
-            }
         }
 
         private void Canvas_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
@@ -122,67 +114,54 @@ namespace ArchitectureCreator
             StopDragging();
         }
 
-        private void WorkspaceCanvas_MouseWheel(object sender, MouseWheelEventArgs e)
+        private void Canvas_MouseWheel(object sender, MouseWheelEventArgs e)
         {
-            if (_isDragging && _selectedElement != null)
-            {
+            if (isDragging && selectedCanvasElement != null)
                 RotateElement(e.Delta);
-            }
             else
-            {
                 ZoomCanvas(e.Delta);
-            }
         }
 
         private void StartDragging(Point position)
         {
-            _isDragging = true;
-            _clickPosition = position;
+            isDragging = true;
+            clickPosition = position;
             DrawingCanvas.CaptureMouse();
         }
 
         private void StopDragging()
         {
-            _isDragging = false;
-            _selectedElement = null;
+            isDragging = false;
+            selectedCanvasElement = null;
             DrawingCanvas.ReleaseMouseCapture();
         }
 
         private void DragElement(Point position)
         {
-            double offsetX = position.X - _clickPosition.X;
-            double offsetY = position.Y - _clickPosition.Y;
-            Point pointTemp = new Point(Canvas.GetLeft(_selectedElement), Canvas.GetTop(_selectedElement));
+            double offsetX = position.X - clickPosition.X;
+            double offsetY = position.Y - clickPosition.Y;
+            Point pointTemp = new Point(Canvas.GetLeft(selectedCanvasElement), Canvas.GetTop(selectedCanvasElement));
             int j = 0;
             for (int i = 0; i < saveProjectClass.canvasElements.Count; i++)
             {
                 if (saveProjectClass.canvasElements[i].position == pointTemp)
-                {
                     j = i;
-                }
             }
-            pointTemp = new Point(Canvas.GetLeft(_selectedElement) + offsetX, Canvas.GetTop(_selectedElement) + offsetY);
-            Canvas.SetLeft(_selectedElement, pointTemp.X);
-            Canvas.SetTop(_selectedElement, pointTemp.Y);
+            pointTemp = new Point(Canvas.GetLeft(selectedCanvasElement) + offsetX, Canvas.GetTop(selectedCanvasElement) + offsetY);
+            Canvas.SetLeft(selectedCanvasElement, pointTemp.X);
+            Canvas.SetTop(selectedCanvasElement, pointTemp.Y);
 
             saveProjectClass.canvasElements[j].position = pointTemp;
-            _clickPosition = position;
+            clickPosition = position;
         }
 
         private void RotateElement(int delta)
         {
-            Point pointTemp = new Point(Canvas.GetLeft(_selectedElement), Canvas.GetTop(_selectedElement));
-            int j = 0;
-            for (int i = 0; i < saveProjectClass.canvasElements.Count; i++)
-            {
-                if (saveProjectClass.canvasElements[i].position == pointTemp)
-                {
-                    j = i;
-                }
-            }
-            _currentAngle += delta > 0 ? 5 : -5;
-            saveProjectClass.canvasElements[j].angle= _currentAngle;
-            _selectedElement.RenderTransform = new RotateTransform(_currentAngle, _selectedElement.Width / 2, _selectedElement.Height / 2);
+            Point pointTemp = new Point(Canvas.GetLeft(selectedCanvasElement), Canvas.GetTop(selectedCanvasElement));
+            int j = FindElement();
+            currentAngle += delta > 0 ? 5 : -5;
+            saveProjectClass.canvasElements[j].angle = currentAngle;
+            selectedCanvasElement.RenderTransform = new RotateTransform(currentAngle, selectedCanvasElement.Width / 2, selectedCanvasElement.Height / 2);
         }
 
         private void ZoomCanvas(int delta)
@@ -215,82 +194,125 @@ namespace ArchitectureCreator
 
         private void MainWindow_KeyDown(object sender, KeyEventArgs e)
         {
-            if (_isDragging && _selectedElement != null)
-            {
+            if (isDragging && selectedCanvasElement != null)
                 if (e.Key == Key.Back || e.Key == Key.Delete)
                 {
-                    DrawingCanvas.Children.Remove(_selectedElement);
-                    _selectedElement = null;
-                    _isDragging = false;
+                    int j = FindElement();
+                    saveProjectClass.canvasElements.RemoveAt(j);
+                    DrawingCanvas.Children.Remove(selectedCanvasElement);
+                    selectedCanvasElement = null;
+                    isDragging = false;
                 }
+        }
+
+        private int FindElement()
+        {
+            Point pointTemp = new Point(Canvas.GetLeft(selectedCanvasElement), Canvas.GetTop(selectedCanvasElement));
+            int j = 0;
+            for (int i = 0; i < saveProjectClass.canvasElements.Count; i++)
+            {
+                if (saveProjectClass.canvasElements[i].position == pointTemp)
+                    j = i;
             }
+
+            return j;
         }
 
         private void SaveProject_Click(object sender, RoutedEventArgs e)
         {
-            /*var elements = new List<CanvasElement>();
-            foreach (UIElement element in DrawingCanvas.Children)
-            {
-                MessageBox.Show(element.ToString());
-                if (element is Canvas canvasElement)
-                {
-                    // Zapisz tylko lokalizację i kąt obrotu
-                    double left = Canvas.GetLeft(canvasElement);
-                    double top = Canvas.GetTop(canvasElement);
-                    double angle = ((RotateTransform)canvasElement.RenderTransform)?.Angle ?? 0;
-
-                    elements.Add(new CanvasElement
-                    {
-                        Left = left,
-                        Top = top,
-                        Angle = angle
-                    });
-                }
-            }
-
-            var json = JsonConvert.SerializeObject(elements, Formatting.Indented);
-            File.WriteAllText("canvasProject.json", json);*/
-            /*List<Canvas> elements1 = new List<Canvas>();
-            foreach (UIElement element in DrawingCanvas.Children)
-            {
-                if (element is Canvas canvasElement)
-                {
-                    elements1.Add(canvasElement);
-                    MessageBox.Show(elements1.ToString());
-                }
-            }*/
             string json = JsonConvert.SerializeObject(saveProjectClass, Formatting.Indented);
             File.WriteAllText("canvasProject.json", json);
         }
 
-        private void OpenProject_Click(object sender, RoutedEventArgs e)
+        private async void OpenProject_Click(object sender, RoutedEventArgs e)
         {
             if (File.Exists("canvasProject.json"))
             {
-                string json = File.ReadAllText("canvasProject.json");
-                SaveProjectClass savedProjekt = JsonConvert.DeserializeObject<SaveProjectClass>(json);
-                var garbage = DrawingCanvas.Children.OfType<UIElement>().ToList();
-                foreach (UIElement garbageElement in garbage)
-                {
-                    if (!(garbageElement is Border))
-                        DrawingCanvas.Children.Remove(garbageElement);
-                }
+                await RenderOpenedProject();
+            }
+            else
+                MessageBox.Show("Brak zapisanego projektu");
+        }
 
+        private async void AsyncInitialization()
+        {
+            await RenderOpenedProject();
+        }
+
+        private async Task RenderOpenedProject()
+        {
+            string json = await ReadFileAsync("canvasProject.json");
+            SaveProjectClass savedProjekt = JsonConvert.DeserializeObject<SaveProjectClass>(json);
+
+            await Task.Run(() =>
+            {
+                List<UIElement> garbage = null;
+                Application.Current.Dispatcher.Invoke(() =>
+                {
+                    garbage = DrawingCanvas.Children.OfType<UIElement>().Where(e => !(e is Border)).ToList();
+                });
+
+                Parallel.ForEach(garbage, garbageElement =>
+                {
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        DrawingCanvas.Children.Remove(garbageElement);
+                    });
+                });
+            });
+
+            Application.Current.Dispatcher.Invoke(() =>
+            {
                 DrawingCanvas.Width = savedProjekt.width * 100;
                 DrawingCanvas.Height = savedProjekt.height * 100;
                 CanvasBorder.Width = savedProjekt.width * 100;
                 CanvasBorder.Height = savedProjekt.height * 100;
-                saveProjectClass = null;
                 saveProjectClass = new SaveProjectClass(savedProjekt.width, savedProjekt.height);
-                List<CanvasElement> savedProjektCanvas = FileManager.SorterElements(savedProjekt.canvasElements);
-                foreach (CanvasElement loadElement in savedProjektCanvas)
+            });
+
+            List<CanvasElement> savedProjektCanvas = await Task.Run(() => FileManager.SorterElements(savedProjekt.canvasElements));
+
+            await Task.Run(() =>
+            {
+                Parallel.ForEach(savedProjektCanvas, loadElement =>
                 {
-                    Canvas newElement = loadElement.etype.CreateShape(loadElement.position);
-                    newElement.RenderTransform = new RotateTransform(loadElement.angle, newElement.Width / 2, newElement.Height / 2);
-                    DrawingCanvas.Children.Add(newElement);
-                    saveProjectClass.canvasElements.Add(new CanvasElement(loadElement.etype, loadElement.position, loadElement.angle));
-                }
-            }
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        Canvas newElement = loadElement.etype.CreateShape(loadElement.position);
+                        newElement.RenderTransform = new RotateTransform(loadElement.angle, newElement.Width / 2, newElement.Height / 2);
+                        DrawingCanvas.Children.Add(newElement);
+                        saveProjectClass.canvasElements.Add(new CanvasElement(loadElement.etype, loadElement.position, loadElement.angle));
+                    });
+                });
+            });
+        }
+
+        private void ExportProject_Click(object sender, RoutedEventArgs e)
+        {
+            var originalTransform = DrawingCanvas.LayoutTransform;
+            DrawingCanvas.LayoutTransform = null;
+
+            Size size = new Size(DrawingCanvas.Width, DrawingCanvas.Height);
+            DrawingCanvas.Measure(size);
+            DrawingCanvas.Arrange(new Rect(size));
+
+            var renderTargetBitmap = new RenderTargetBitmap((int)size.Width, (int)size.Height, 96d, 96d, PixelFormats.Pbgra32);
+            renderTargetBitmap.Render(DrawingCanvas);
+
+            DrawingCanvas.LayoutTransform = originalTransform;
+            DrawingCanvas.Measure(new Size(DrawingCanvas.ActualWidth, DrawingCanvas.ActualHeight));
+            DrawingCanvas.Arrange(new Rect(new Point(0, 0), size));
+            var pngEncoder = new PngBitmapEncoder();
+            pngEncoder.Frames.Add(BitmapFrame.Create(renderTargetBitmap));
+
+            using (var fs = File.OpenWrite("canvas.png"))
+                pngEncoder.Save(fs);
+        }
+
+        private async Task<string> ReadFileAsync(string filePath)
+        {
+            using (StreamReader reader = new StreamReader(filePath))
+                return await reader.ReadToEndAsync();
         }
     }
 }

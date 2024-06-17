@@ -1,15 +1,6 @@
-﻿using Newtonsoft.Json;
-using System.Text;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.IO;
 
 namespace ArchitectureCreator
@@ -30,8 +21,17 @@ namespace ArchitectureCreator
         }
         private void Button_Accept(object sender, RoutedEventArgs e)
         {
-            if(roomWidthBox.Text!="" && roomHeightBox.Text!="")
+            if (roomWidthBox.Text != "" && roomHeightBox.Text != "")
                 MainFrame.Navigate(new EdytorPage(float.Parse(roomWidthBox.Text), float.Parse(roomHeightBox.Text)));
+        }
+        private void Button_Open(object sender, RoutedEventArgs e)
+        {
+            if (File.Exists("canvasProject.json"))
+            {
+                MainFrame.Navigate(new EdytorPage());
+            }
+            else
+                MessageBox.Show("Brak zapisanego projektu");
         }
     }
 }

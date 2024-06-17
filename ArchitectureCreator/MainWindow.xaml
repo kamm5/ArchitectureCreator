@@ -6,15 +6,67 @@
         xmlns:local="clr-namespace:ArchitectureCreator"
         mc:Ignorable="d"
         Title="MainWindow" Height="720" Width="1280">
-    <Grid>
-        <Label Content="Program do tworzenie projektu zagospodarowania wnętrza" HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top" FontSize="36" FontWeight="Bold"/>
-        <Label Content="Podaj wymiary pomieszczenia" HorizontalAlignment="Left" Margin="132,178,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
-        <Label Content="Wysokość:" HorizontalAlignment="Left" Margin="132,262,0,0" VerticalAlignment="Top" FontSize="20"/>
-        <Label Content="Szerokość:" HorizontalAlignment="Left" Margin="132,220,0,0" VerticalAlignment="Top" FontSize="20"/>
-        <TextBox x:Name="roomWidthBox" HorizontalAlignment="Left" Margin="240,224,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
-        <TextBox x:Name="roomHeightBox" HorizontalAlignment="Left" Margin="240,266,0,0" TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20" PreviewTextInput="NumberValidationTextBox"/>
-        <Button x:Name="acceptDimensions" Content="Zatwierdź" Click="Button_Accept" HorizontalAlignment="Left" Margin="132,304,0,0" VerticalAlignment="Top" FontSize="20" Width="200"/>
-        <TextBlock x:Name="elementTextBlock" HorizontalAlignment="Left" Margin="500,370,0,0" TextWrapping="Wrap" Text="TextBlock" VerticalAlignment="Top" Height="300" Width="750" FontSize="16"/>
+    <Window.Resources>
+        <Style TargetType="Button" x:Key="ButtonStyle">
+            <Setter Property="Margin" Value="5"/>
+            <Setter Property="Padding" Value="10"/>
+            <Setter Property="FontSize" Value="16"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Background" Value="#007ACC"/>
+            <Setter Property="BorderBrush" Value="#007ACC"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="HorizontalAlignment" Value="Center"/>
+            <Setter Property="VerticalAlignment" Value="Center"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Grid>
+                            <Border x:Name="border" Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="{TemplateBinding BorderThickness}"
+                                    CornerRadius="5"/>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Grid>
+                        <ControlTemplate.Triggers>
+                            <EventTrigger RoutedEvent="Button.Click">
+                                <BeginStoryboard>
+                                    <Storyboard>
+                                        <DoubleAnimation Storyboard.TargetProperty="Opacity"
+                                                         From="1.0" To="0.7" Duration="0:0:0.1" AutoReverse="True"/>
+                                    </Storyboard>
+                                </BeginStoryboard>
+                            </EventTrigger>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="border" Property="Background" Value="#005A8C"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+    </Window.Resources>
+    <Grid Background="#F0F0F0">
+        <Label Content="Program do tworzenia projektu zagospodarowania wnętrza"
+               HorizontalAlignment="Center" Margin="0,40,0,0" VerticalAlignment="Top"
+               FontSize="36" FontWeight="Bold"/>
+        <Label Content="Podaj wymiary pomieszczenia" HorizontalAlignment="Left"
+               Margin="132,178,0,0" VerticalAlignment="Top" FontSize="20" FontWeight="Bold"/>
+        <Label Content="Wysokość:" HorizontalAlignment="Left" Margin="132,262,0,0"
+               VerticalAlignment="Top" FontSize="20"/>
+        <Label Content="Szerokość:" HorizontalAlignment="Left" Margin="132,220,0,0"
+               VerticalAlignment="Top" FontSize="20"/>
+        <TextBox x:Name="roomWidthBox" HorizontalAlignment="Left" Margin="240,224,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20"
+                 PreviewTextInput="NumberValidationTextBox"/>
+        <TextBox x:Name="roomHeightBox" HorizontalAlignment="Left" Margin="240,266,0,0"
+                 TextWrapping="Wrap" VerticalAlignment="Top" Width="120" FontSize="20"
+                 PreviewTextInput="NumberValidationTextBox"/>
+        <Button x:Name="acceptDimensions" Content="Zatwierdź" Click="Button_Accept"
+                HorizontalAlignment="Left" Margin="132,304,0,0" VerticalAlignment="Top"
+                FontSize="20" Width="200" Style="{StaticResource ButtonStyle}"/>
+        <Button x:Name="openProject" Content="Otwórz projekt" Click="Button_Open"
+                HorizontalAlignment="Left" Margin="132,354,0,0" VerticalAlignment="Top"
+                FontSize="20" Width="200" Style="{StaticResource ButtonStyle}"/>
         <Frame Name="MainFrame" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>
