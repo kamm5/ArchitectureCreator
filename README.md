@@ -37,3 +37,7 @@ ArchitectureCreator to aplikacja WPF (Windows Presentation Foundation) umożliwi
 ### Eksportowanie projektu
 1. Kliknij przycisk "Eksportuj projekt".
 2. Plik `canvas.png` zostanie zapisany w katalogu aplikacji.
+
+## Screenshots
+![screenshot1](screenshots/screenshot1.png)
+![screenshot2](screenshots/screenshot2.png)
